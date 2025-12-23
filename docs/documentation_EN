@@ -1,0 +1,563 @@
+# 📚 HR Management System - Complete Documentation
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Installation Guide](#installation-guide)
+4. [Configuration](#configuration)
+5. [API Documentation](#api-documentation)
+6. [Database Schema](#database-schema)
+7. [Design Patterns](#design-patterns)
+8. [Testing](#testing)
+9. [Deployment](#deployment)
+10. [Contributing](#contributing)
+
+---
+
+## Overview
+
+The HR Management System is a comprehensive solution for managing human resources in organizations. It provides features for employee management, leave tracking, training administration, performance evaluations, and automated notifications.
+
+### Key Features
+
+- **Employee Management**: Complete employee lifecycle management
+- **Leave Management**: Automated leave request and approval workflows
+- **Training Management**: Training catalog and employee development tracking
+- **Performance Evaluation**: Employee assessment and objective tracking
+- **Notifications**: Multi-channel notification system
+- **Role-Based Access Control**: Secure access management
+- **RESTful API**: Modern API design with FastAPI
+- **Real-time Dashboards**: Role-specific analytics and insights
+
+---
+
+## Architecture
+
+### System Architecture
+
+The application follows **Clean Architecture** principles with clear separation of concerns:
+
+```
+┌─────────────────────────────────────────┐
+│         Presentation Layer              │
+│  (FastAPI Routes, Templates, Static)    │
+├─────────────────────────────────────────┤
+│         Application Layer               │
+│  (Services, Use Cases, Business Logic)  │
+├─────────────────────────────────────────┤
+│         Domain Layer                    │
+│  (Entities, Models, Value Objects)      │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer            │
+│  (Database, External Services, Repos)   │
+└─────────────────────────────────────────┘
+```
+
+### Technology Stack
+
+- **Backend Framework**: FastAPI 0.104+
+- **Database**: PostgreSQL 12+ with psycopg v3
+- **ORM**: SQLAlchemy 2.0
+- **Authentication**: JWT (JSON Web Tokens)
+- **Password Hashing**: bcrypt
+- **Migration Tool**: Alembic
+- **Testing**: pytest, pytest-cov
+- **Validation**: Pydantic v2
+
+### Project Structure
+
+```
+HR-management-system/
+├── app/
+│   ├── api/                    # API endpoints
+│   │   ├── auth.py            # Authentication endpoints
+│   │   ├── employees.py       # Employee management
+│   │   ├── leave_api.py       # Leave management
+│   │   ├── trainings.py       # Training management
+│   │   └── ...
+│   ├── core/                   # Core configuration
+│   │   ├── config.py          # Application settings
+│   │   └── security.py        # Security utilities
+│   ├── models/                 # SQLAlchemy models
+│   │   ├── employee.py
+│   │   ├── leave.py
+│   │   ├── training.py
+│   │   └── ...
+│   ├── repositories/           # Data access layer
+│   │   ├── employee_repository.py
+│   │   └── leave_repository.py
+│   ├── services/               # Business logic
+│   │   ├── auth_service.py
+│   │   ├── employee_service.py
+│   │   ├── leave_service.py
+│   │   └── ...
+│   ├── factories/              # Factory patterns
+│   ├── strategies/             # Strategy patterns
+│   ├── observers/              # Observer patterns
+│   ├── states/                 # State patterns
+│   ├── database.py            # Database configuration
+│   └── main.py                # Application entry point
+├── tests/                      # Test suite
+│   ├── integration/
+│   ├── e2e_test/
+│   └── test_*.py
+├── alembic/                    # Database migrations
+├── frontend/                   # Web interface
+├── docs/                       # Documentation
+└── requirements.txt            # Dependencies
+```
+
+---
+
+## Installation Guide
+
+### Prerequisites
+
+- Python 3.13 or higher
+- PostgreSQL 12 or higher
+- pip (Python package manager)
+- Git
+
+### Step-by-Step Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Mallek8/HR-management-system.git
+   cd HR-management-system
+   ```
+
+2. **Create Virtual Environment**
+   ```bash
+   python -m venv venv
+   
+   # On Windows
+   venv\Scripts\activate
+   
+   # On Linux/Mac
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set Up PostgreSQL Database**
+   ```sql
+   CREATE DATABASE hr_management;
+   CREATE USER hr_user WITH PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE hr_management TO hr_user;
+   ```
+
+5. **Configure Environment Variables**
+   ```bash
+   cp env.example .env
+   ```
+   
+   Edit `.env` file:
+   ```env
+   DATABASE_URL=postgresql://hr_user:your_password@localhost:5432/hr_management
+   SECRET_KEY=your-secret-key-here
+   DEBUG=True
+   ```
+
+6. **Run Database Migrations**
+   ```bash
+   alembic upgrade head
+   ```
+
+7. **Start the Application**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+8. **Access the Application**
+   - API: http://127.0.0.1:8000
+   - API Docs: http://127.0.0.1:8000/docs
+   - ReDoc: http://127.0.0.1:8000/redoc
+
+---
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | - | Yes |
+| `SECRET_KEY` | JWT secret key | - | Yes |
+| `ALGORITHM` | JWT algorithm | HS256 | No |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token expiration time | 10080 | No |
+| `DEBUG` | Debug mode | False | No |
+| `API_V1_PREFIX` | API version prefix | /api/v1 | No |
+| `SMTP_HOST` | SMTP server host | - | No |
+| `SMTP_PORT` | SMTP server port | 587 | No |
+| `SMTP_USER` | SMTP username | - | No |
+| `SMTP_PASSWORD` | SMTP password | - | No |
+
+### Database Configuration
+
+The application uses PostgreSQL with psycopg v3 for optimal UTF-8 support and Python 3.13 compatibility.
+
+Connection string format:
+```
+postgresql+psycopg://username:password@host:port/database_name
+```
+
+---
+
+## API Documentation
+
+### Authentication
+
+#### Login
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+**Response:**
+```json
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "token_type": "bearer"
+}
+```
+
+#### Get Current User
+```http
+GET /api/auth/me
+Authorization: Bearer {token}
+```
+
+### Employee Management
+
+#### List Employees
+```http
+GET /api/employees
+Authorization: Bearer {token}
+```
+
+#### Create Employee
+```http
+POST /api/employees
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "department_id": 1,
+  "role": "employee"
+}
+```
+
+#### Update Employee
+```http
+PUT /api/employees/{employee_id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated",
+  "department_id": 2
+}
+```
+
+#### Delete Employee
+```http
+DELETE /api/employees/{employee_id}
+Authorization: Bearer {token}
+```
+
+### Leave Management
+
+#### Create Leave Request
+```http
+POST /api/leaves/request
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "start_date": "2025-03-15",
+  "end_date": "2025-03-20",
+  "leave_type": "vacation",
+  "reason": "Family vacation"
+}
+```
+
+#### Approve/Reject Leave Request
+```http
+PUT /api/leaves/{leave_id}/approve
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "status": "approved",
+  "comments": "Approved by supervisor"
+}
+```
+
+### Training Management
+
+#### List Trainings
+```http
+GET /api/trainings
+Authorization: Bearer {token}
+```
+
+#### Request Training
+```http
+POST /api/trainings/request
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "training_id": 1,
+  "employee_id": 5,
+  "requested_date": "2025-04-01"
+}
+```
+
+---
+
+## Database Schema
+
+### Core Entities
+
+#### Employee
+- `id` (Primary Key)
+- `name` (String)
+- `email` (String, Unique)
+- `password` (String, Hashed)
+- `department_id` (Foreign Key)
+- `role` (String: admin, supervisor, employee)
+- `hire_date` (Date)
+- `created_at` (Timestamp)
+- `updated_at` (Timestamp)
+
+#### Leave
+- `id` (Primary Key)
+- `employee_id` (Foreign Key)
+- `start_date` (Date)
+- `end_date` (Date)
+- `leave_type` (String)
+- `status` (String: pending, approved, rejected)
+- `reason` (Text)
+- `approved_by` (Foreign Key, Nullable)
+- `created_at` (Timestamp)
+
+#### Training
+- `id` (Primary Key)
+- `title` (String)
+- `description` (Text)
+- `duration` (Integer)
+- `instructor` (String)
+- `capacity` (Integer)
+- `created_at` (Timestamp)
+
+#### Department
+- `id` (Primary Key)
+- `name` (String, Unique)
+- `description` (Text)
+- `created_at` (Timestamp)
+
+### Relationships
+
+- Employee → Department (Many-to-One)
+- Employee → Leave (One-to-Many)
+- Employee → Training (Many-to-Many via EmployeeTraining)
+- Leave → Employee (Many-to-One, for approver)
+
+---
+
+## Design Patterns
+
+### Factory Pattern
+Used for creating services and employees dynamically.
+
+**Location**: `app/factories/`
+
+**Example**:
+```python
+from app.factories.employee_factory import EmployeeFactory
+
+employee = EmployeeFactory.create_employee(employee_data)
+```
+
+### Repository Pattern
+Abstraction layer for data access.
+
+**Location**: `app/repositories/`
+
+**Example**:
+```python
+from app.repositories.employee_repository import EmployeeRepository
+
+repo = EmployeeRepository(db)
+employees = repo.get_all()
+```
+
+### Strategy Pattern
+Dynamic selection of notification channels.
+
+**Location**: `app/strategies/notifications/`
+
+**Example**:
+```python
+from app.strategies.notifications.email_strategy import EmailNotificationStrategy
+
+strategy = EmailNotificationStrategy()
+strategy.send(notification)
+```
+
+### Observer Pattern
+Event-driven notification system.
+
+**Location**: `app/observers/`
+
+**Example**:
+```python
+from app.observers.event_subject import EventSubject
+from app.observers.notification_observer import NotificationObserver
+
+subject = EventSubject()
+observer = NotificationObserver()
+subject.attach(observer)
+subject.notify(event)
+```
+
+### State Pattern
+Leave request state transitions.
+
+**Location**: `app/states/leave_request/`
+
+**States**: `Pending`, `Approved`, `Rejected`
+
+---
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run with verbose output
+pytest -v
+
+# Run with coverage
+pytest --cov=app --cov-report=html
+
+# Run specific test file
+pytest tests/test_employee_service.py
+
+# Run specific test
+pytest tests/test_employee_service.py::test_create_employee
+```
+
+### Test Structure
+
+- **Unit Tests**: Test individual components in isolation
+- **Integration Tests**: Test component interactions
+- **E2E Tests**: Test complete workflows
+
+### Test Coverage
+
+The project maintains high test coverage:
+- Unit tests: Services, repositories, models
+- Integration tests: API endpoints, workflows
+- E2E tests: Complete user scenarios
+
+---
+
+## Deployment
+
+### Production Checklist
+
+- [ ] Set `DEBUG=False` in environment variables
+- [ ] Use strong `SECRET_KEY`
+- [ ] Configure proper database credentials
+- [ ] Set up SSL/TLS certificates
+- [ ] Configure CORS properly
+- [ ] Set up logging
+- [ ] Configure backup strategy
+- [ ] Set up monitoring
+
+### Docker Deployment (Optional)
+
+```dockerfile
+FROM python:3.13-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### Environment-Specific Configuration
+
+- **Development**: Use `.env` file
+- **Production**: Use environment variables or secure secret management
+- **Testing**: Use separate test database
+
+---
+
+## Contributing
+
+### Contribution Guidelines
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Code Style
+
+- Follow PEP 8 Python style guide
+- Use type hints where applicable
+- Write docstrings for all functions and classes
+- Maintain test coverage above 80%
+
+### Commit Messages
+
+Use clear, descriptive commit messages:
+```
+feat: Add employee search functionality
+fix: Resolve leave balance calculation issue
+docs: Update API documentation
+test: Add integration tests for leave service
+```
+
+---
+
+## Additional Resources
+
+### API Documentation
+- Interactive API docs: `/docs` (Swagger UI)
+- Alternative docs: `/redoc` (ReDoc)
+
+### Support
+- Issues: [GitHub Issues](https://github.com/Mallek8/HR-management-system/issues)
+- Discussions: [GitHub Discussions](https://github.com/Mallek8/HR-management-system/discussions)
+
+### License
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+
+---
+
+**Last Updated**: March 2025  
+**Version**: 1.0.0  
+**Author**: Mallek Hannachi
