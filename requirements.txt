@@ -1,0 +1,11 @@
+fastapi==0.68.1
+uvicorn==0.15.0
+sqlalchemy==1.4.27
+alembic==1.7.6
+pytest==6.2.5
+pytest-cov==2.12.1
+pydantic==1.8.2
+requests==2.26.0
+python-dotenv==0.19.2
+Jinja2==3.0.3
+psycopg[binary]>=3.1.0

@@ -1,0 +1,168 @@
+/* 🎨 Palette de couleurs unifiée pour toute l'application RH */
+:root {
+    --primary: #4A90E2;         /* Bleu doux */
+    --primary-dark: #003366;    /* Bleu foncé */
+    --primary-light: #DDE6F1;   /* Gris bleuté */
+    --secondary: #F5F7FA;       /* Gris clair */
+    --success: #27AE60;         /* Vert doux */
+    --success-light: #e8f8f0;
+    --danger: #E74C3C;          /* Rouge pâle */
+    --danger-dark: #C0392B;     /* Rouge foncé */
+    --info: #2196F3;
+    --info-light: #E6F9FE;
+    --warning: #F8961E;
+    --warning-light: #FFF4E6;
+
+    --white: #FFFFFF;
+    --dark: #2D3047;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+
+    --text-light: #6E7391;
+    --text-muted: #6c757d;
+    --border: #E2E8F0;
+    --grey-color: #e0e0e0;
+
+    --body-bg: var(--secondary);
+    --card-bg: var(--white);
+    --sidebar-width: 250px;
+    --header-height: 70px;
+
+    --transition: all 0.3s ease;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    --rounded-sm: 0.25rem;
+    --rounded: 0.5rem;
+    --rounded-lg: 1rem;
+}
+
+/* 🌐 Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    background-color: var(--primary-dark);
+    color: var(--white);
+    padding-top: var(--header-height);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    z-index: 1030;
+    border-radius: 0 12px 12px 0;
+}
+
+.sidebar .nav-item {
+    margin-bottom: 5px;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    padding: 12px 20px;
+    font-weight: 500;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.sidebar .nav-link i {
+    margin-right: 12px;
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    transform: translateX(4px);
+}
+
+/* 📱 Responsive Sidebar */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+/* 📄 Contenu principal */
+#page-content {
+    margin-left: var(--sidebar-width);
+    padding: 20px 30px;
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    padding-top: var(--header-height);
+    background-color: var(--body-bg);
+    transition: var(--transition);
+}
+
+@media (max-width: 991.98px) {
+    #page-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* 🧭 Barre de navigation */
+.navbar {
+    background-color: var(--white);
+    box-shadow: var(--shadow);
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    z-index: 1040;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--primary-dark);
+    font-family: 'Inter', sans-serif;
+}
+
+.navbar .nav-link {
+    color: rgba(0, 0, 0, 0.7);
+    transition: var(--transition);
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary);
+}
+
+/* 📦 Cartes */
+.card {
+    border: none;
+    border-radius: var(--rounded);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 15px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}

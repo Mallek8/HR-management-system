@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des employés{% endblock %}
+
+{% block content %}
+<!-- En-tête avec titre et bouton d'ajout -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Gestion des employés</h1>
+        <p class="text-muted">Gérez les informations de vos employés</p>
+    </div>
+    <button class="btn btn-primary" id="addEmployeeBtn">
+        <i class="fas fa-user-plus me-2"></i>Ajouter un employé
+    </button>
+</div>
+
+<!-- Message de chargement -->
+<div id="loadingMessage" class="d-flex justify-content-center my-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+    </div>
+</div>
+
+<!-- Tableau des employés avec design amélioré -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Liste des employés</h5>
+        <div class="d-flex">
+            <input type="text" class="form-control form-control-sm me-2" placeholder="Rechercher..." id="employeeSearch">
+            <select class="form-select form-select-sm" id="departmentFilter">
+                <option value="">Tous les départements</option>
+                <option value="RH">Ressources Humaines</option>
+                <option value="IT">Informatique</option>
+                <option value="Finance">Finance</option>
+                <option value="Marketing">Marketing</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover employee-table">
+                <thead>
+                    <!-- Les en-têtes seront générés par JavaScript -->
+                </thead>
+                <tbody id="employee-table">
+                    <!-- Les données seront remplies par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'ajout d'employé -->
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter un nouvel employé</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="role" class="form-label">Rôle</label>
+                            <input type="text" class="form-control" id="role" name="role" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="department" class="form-label">Département</label>
+                            <input type="text" class="form-control" id="department" name="department">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="hire_date" class="form-label">Date d'embauche</label>
+                            <input type="date" class="form-control" id="hire_date" name="hire_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="birth_date" class="form-label">Date de naissance</label>
+                            <input type="date" class="form-control" id="birth_date" name="birth_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="salary" class="form-label">Salaire</label>
+                            <input type="number" class="form-control" id="salary" name="salary">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="experience" class="form-label">Expérience (années)</label>
+                            <input type="number" class="form-control" id="experience" name="experience">
+                        </div>
+                        <div class="col-12">
+                            <label for="supervisor_id" class="form-label">ID du superviseur</label>
+                            <input type="number" class="form-control" id="supervisor_id" name="supervisor_id">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="saveEmployeeBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de modification d'employé -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier l'employé</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editEmployeeForm">
+                    <input type="hidden" id="editEmployeeId" name="employeeId">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="editEmployeeName" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="editEmployeeName" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editEmployeeEmail" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeRole" class="form-label">Rôle</label>
+                            <input type="text" class="form-control" id="editEmployeeRole" name="role" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeDepartment" class="form-label">Département</label>
+                            <input type="text" class="form-control" id="editEmployeeDepartment" name="department">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeHireDate" class="form-label">Date d'embauche</label>
+                            <input type="date" class="form-control" id="editEmployeeHireDate" name="hire_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeBirthDate" class="form-label">Date de naissance</label>
+                            <input type="date" class="form-control" id="editEmployeeBirthDate" name="birth_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeSalary" class="form-label">Salaire</label>
+                            <input type="number" class="form-control" id="editEmployeeSalary" name="salary">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEmployeeExperience" class="form-label">Expérience</label>
+                            <input type="number" class="form-control" id="editEmployeeExperience" name="experience">
+                        </div>
+                        <div class="col-12">
+                            <label for="editEmployeeSupervisor" class="form-label">ID du superviseur</label>
+                            <input type="number" class="form-control" id="editEmployeeSupervisor" name="supervisor_id">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="updateEmployeeBtn">Enregistrer les modifications</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="/static/js/main.js?v=2.1"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser les modals avec Bootstrap
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        new bootstrap.Modal(modal);
+    });
+    
+    // Gestionnaire pour le bouton d'ajout
+    const addBtn = document.getElementById('addEmployeeBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('employeeModal'));
+            modal.show();
+        });
+    }
+    
+    // Gestionnaire pour le bouton de sauvegarde
+    const saveBtn = document.getElementById('saveEmployeeBtn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            const form = document.getElementById('employeeForm');
+            if (form.checkValidity()) {
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                
+                fetch('/api/employees/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        bootstrap.Modal.getInstance(document.getElementById('employeeModal')).hide();
+                        alert('Employé ajouté avec succès!');
+                        fetchEmployees();
+                    } else {
+                        throw new Error('Erreur lors de l\'ajout');
+                    }
+                })
+                .catch(error => {
+                    alert('Erreur: ' + error.message);
+                });
+            } else {
+                form.reportValidity();
+            }
+        });
+    }
+    
+    // Gestionnaire pour le bouton de mise à jour
+    const updateBtn = document.getElementById('updateEmployeeBtn');
+    if (updateBtn) {
+        updateBtn.addEventListener('click', function() {
+            const form = document.getElementById('editEmployeeForm');
+            if (form.checkValidity()) {
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                
+                fetch(`/api/employees/${data.employeeId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        bootstrap.Modal.getInstance(document.getElementById('editEmployeeModal')).hide();
+                        alert('Employé modifié avec succès!');
+                        fetchEmployees();
+                    } else {
+                        throw new Error('Erreur lors de la modification');
+                    }
+                })
+                .catch(error => {
+                    alert('Erreur: ' + error.message);
+                });
+            } else {
+                form.reportValidity();
+            }
+        });
+    }
+    
+    // Ajouter une classe spéciale pour les cellules d'actions
+    const checkResponsiveTable = () => {
+        const tableWidth = document.querySelector('.table-responsive')?.offsetWidth;
+        const table = document.querySelector('.employee-table');
+        
+        if (tableWidth && tableWidth < 768) {
+            table?.classList.add('small-screen');
+            document.querySelectorAll('.action-buttons').forEach(btn => {
+                btn.classList.add('flex-column');
+                btn.querySelectorAll('.btn').forEach(b => {
+                    b.classList.add('w-100', 'mb-1');
+                });
+            });
+        } else {
+            table?.classList.remove('small-screen');
+            document.querySelectorAll('.action-buttons').forEach(btn => {
+                btn.classList.remove('flex-column');
+                btn.querySelectorAll('.btn').forEach(b => {
+                    b.classList.remove('w-100', 'mb-1');
+                });
+            });
+        }
+    };
+    
+    // Vérifier au chargement et quand la fenêtre change de taille
+    checkResponsiveTable();
+    window.addEventListener('resize', checkResponsiveTable);
+    
+    // Recherche dans le tableau
+    const searchInput = document.getElementById('employeeSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#employee-table tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    }
+    
+    // Filtre par département
+    const deptFilter = document.getElementById('departmentFilter');
+    if (deptFilter) {
+        deptFilter.addEventListener('change', function() {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#employee-table tr');
+            
+            if (!filterValue) {
+                rows.forEach(row => row.style.display = '');
+                return;
+            }
+            
+            rows.forEach(row => {
+                const deptCell = row.cells[4]; // 5ème colonne = département
+                if (deptCell) {
+                    const deptText = deptCell.textContent.toLowerCase();
+                    row.style.display = deptText.includes(filterValue) ? '' : 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

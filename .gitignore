@@ -1,0 +1,45 @@
+# Environnements virtuels
+venv/
+.venv/
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Caches de test et de couverture
+.pytest_cache/
+.coverage
+.cache/
+
+# Alembic
+alembic/versions/
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+
+# IDEs
+.vscode/
+.idea/
+
+# Bases de données locales
+*.sqlite3
+*.db
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Environnement personnel
+.env
+.env.local
+.env.*.local
+
+# Fichiers de configuration sensibles
+*.env
+config.local.py
+
+# Fichiers PDF (peut contenir des infos sensibles - décommenter si nécessaire)
+# *.pdf

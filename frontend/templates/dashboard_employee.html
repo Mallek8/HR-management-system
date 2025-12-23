@@ -1,0 +1,329 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Tableau de Bord Employé{% endblock %}
+
+{% block page_title %}<span id="page-title-name">Tableau de Bord Employé</span>{% endblock %}
+
+{% block head %}
+<!-- Chart.js pour les graphiques -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+  :root {
+    --primary-color: #003366;
+    --secondary-color: #4A90E2;
+    --background-color: #F8FAFC;
+    --text-color: #333333;
+    --success-color: #28A745;
+    --warning-color: #F59E0B;
+    --danger-color: #EF4444;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+  }
+  
+  .card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: none;
+    transition: transform 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .kpi-card {
+    height: 100%;
+    color: white;
+  }
+  
+  .kpi-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .kpi-card .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .kpi-card .kpi-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 10px 0;
+  }
+  
+  .kpi-card .kpi-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+  }
+  
+  .kpi-card .kpi-footer {
+    font-size: 0.8rem;
+    margin-top: 10px;
+  }
+  
+  .activity-item {
+    padding: 15px;
+    border-left: 3px solid var(--secondary-color);
+    margin-bottom: 10px;
+    background-color: white;
+    border-radius: 5px;
+  }
+  
+  .activity-item .activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+  }
+  
+  .activity-item .activity-content {
+    flex: 1;
+  }
+  
+  .activity-item .activity-time {
+    font-size: 0.75rem;
+    color: #6B7280;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- KPI Cards -->
+  <div class="row g-4 mb-4">
+    <!-- Mes demandes de congés -->
+    <div class="col-md-3">
+      <div class="card kpi-card" style="background-color: var(--primary-color);">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Mes demandes de congés</h5>
+              <h2 class="kpi-value" id="leave-requests-total">--</h2>
+              <div class="kpi-footer">
+                <span id="leave-approved" class="badge bg-success me-1">-- Approuvées</span>
+                <span id="leave-pending" class="badge bg-warning me-1">-- En attente</span>
+                <span id="leave-rejected" class="badge bg-danger">-- Refusées</span>
+              </div>
+            </div>
+            <div class="kpi-icon">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mes demandes de formation -->
+    <div class="col-md-3">
+      <div class="card kpi-card" style="background-color: var(--secondary-color);">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Mes demandes de formation</h5>
+              <h2 class="kpi-value" id="training-requests-total">--</h2>
+              <div class="kpi-footer">
+                <span id="training-sent" class="badge bg-light text-dark me-1">-- Envoyées</span>
+                <span id="training-approved" class="badge bg-success me-1">-- Validées</span>
+                <span id="training-rejected" class="badge bg-danger">-- Refusées</span>
+              </div>
+            </div>
+            <div class="kpi-icon">
+              <i class="bi bi-mortarboard"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mon solde de congé -->
+    <div class="col-md-3">
+      <div class="card kpi-card" style="background-color: var(--success-color);">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Mon solde de congé</h5>
+              <h2 class="kpi-value" id="leave-balance">--</h2>
+              <div class="kpi-footer">
+                <small>Sur 25 jours annuels</small>
+              </div>
+            </div>
+            <div class="kpi-icon">
+              <i class="bi bi-battery-charging"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mon taux de présence -->
+    <div class="col-md-3">
+      <div class="card kpi-card" style="background-color: var(--warning-color);">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Mon taux de présence</h5>
+              <h2 class="kpi-value" id="attendance-rate">--%</h2>
+              <div class="kpi-footer">
+                <small>Année en cours</small>
+              </div>
+            </div>
+            <div class="kpi-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Charts & Activities -->
+  <div class="row g-4">
+    <!-- Graphique d'évolution des congés -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="card-title m-0">
+            <i class="bi bi-bar-chart-line me-2"></i>
+            Évolution des congés
+          </h5>
+        </div>
+        <div class="card-body">
+          <canvas id="leave-evolution-chart" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Activités récentes -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="card-title m-0">
+            <i class="bi bi-activity me-2"></i>
+            Activités récentes
+          </h5>
+        </div>
+        <div class="card-body p-3" id="recent-activities">
+          <div class="text-center py-4" id="activities-loading">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-2">Chargement des activités...</p>
+          </div>
+          
+          <!-- Les activités seront ajoutées dynamiquement ici -->
+          <div id="activities-container" class="d-none">
+            <!-- Template pour une activité -->
+            <div class="activity-item d-flex align-items-start mb-3">
+              <div class="activity-icon bg-primary text-white">
+                <i class="bi bi-check-circle"></i>
+              </div>
+              <div class="activity-content">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0 fw-semibold">Congé approuvé</h6>
+                  <span class="activity-time">Il y a 2 heures</span>
+                </div>
+                <p class="mb-0 text-muted">Votre demande de congé du 10 au 15 juin a été approuvée.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Informations personnelles -->
+  <div class="row g-4 mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="card-title m-0">
+            <i class="bi bi-person-vcard me-2"></i>
+            Mes informations
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label text-muted">Nom</label>
+                <p class="fw-semibold" id="employee-name">Chargement...</p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-muted">Email</label>
+                <p class="fw-semibold" id="employee-email">Chargement...</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label text-muted">Département</label>
+                <p class="fw-semibold" id="employee-department">Chargement...</p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-muted">Poste</label>
+                <p class="fw-semibold" id="employee-position">Chargement...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Cette fonction sera appelée quand le DOM sera chargé
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialisation du graphique d'évolution des congés
+    const ctx = document.getElementById('leave-evolution-chart').getContext('2d');
+    const leaveChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+        datasets: [{
+          label: 'Jours de congés pris',
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Sera rempli par l'API
+          backgroundColor: 'rgba(74, 144, 226, 0.2)',
+          borderColor: 'rgba(74, 144, 226, 1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      }
+    });
+    
+    // Lorsque les données sont chargées via JavaScript (dashboard_employee.js)
+    // Le graphique et les KPIs seront mis à jour
+  });
+</script>
+<script src="{{ url_for('static', path='js/dashboard_employee.js') }}"></script>
+{% endblock %}
+

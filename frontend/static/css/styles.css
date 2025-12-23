@@ -1,0 +1,141 @@
+/* 🧩 Base */
+body {
+    background-color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    color: var(--dark);
+}
+
+/* 🧾 Cartes avec effet d'élévation */
+.card {
+    border-radius: 15px;
+    background: var(--white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 🏷️ Badges */
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.75em;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.badge-primary {
+    background-color: rgba(74, 144, 226, 0.15);
+    color: var(--primary);
+}
+
+.badge-success {
+    background-color: rgba(39, 174, 96, 0.15);
+    color: var(--success);
+}
+
+.badge-danger {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: var(--danger);
+}
+
+/* 🖼️ Section d'accueil */
+.welcome-section {
+    padding: 2rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-section h2 {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.welcome-section p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+}
+
+/* 📣 Bannière */
+.banner {
+    background-color: var(--primary-light);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.banner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.banner h3 {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.banner-icon {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    font-size: 4rem;
+    opacity: 0.2;
+    color: var(--primary);
+}
+
+/* 📊 Section statistique */
+.stat-box {
+    padding: 1rem;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-radius: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* 🎯 CTA */
+.cta-button {
+    display: inline-block;
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition);
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.cta-button:hover {
+    background-color: #3A80D2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* 🧩 Utilitaires */
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.bg-primary-light {
+    background-color: var(--primary-light) !important;
+}
+
+.rounded-xl {
+    border-radius: 20px;
+}
+
+.shadow-soft {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}

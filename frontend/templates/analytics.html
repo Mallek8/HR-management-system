@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Tableau de Bord</h2>
+    <p class="text-muted">Analyse des données liées aux employés.</p>
+
+    <!-- SECTION : Graphique des rôles des employés -->
+    <div class="card p-4 shadow-sm">
+        <h5 class="card-title">Répartition des rôles</h5>
+        <canvas id="employeeChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
+
+<!-- SECTION : Inclusion de Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- SECTION : Script de visualisation (relation avec /api/employees/) -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch('/api/employees')
+        .then(response => response.json())
+        .then(data => {
+            // Regrouper les employés par rôle
+            const roleCounts = {};
+            data.forEach(emp => {
+                if (emp.role in roleCounts) {
+                    roleCounts[emp.role]++;
+                } else {
+                    roleCounts[emp.role] = 1;
+                }
+            });
+
+            // Préparer les données pour le graphique
+            const roles = Object.keys(roleCounts);
+            const counts = Object.values(roleCounts);
+
+            // Initialiser le graphique
+            const ctx = document.getElementById("employeeChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: roles,
+                    datasets: [{
+                        label: "Nombre d'employés",
+                        data: counts,
+                        backgroundColor: "rgba(54, 162, 235, 0.2)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stepSize: 1,
+                            title: {
+                                display: true,
+                                text: "Effectif"
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "top"
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Erreur lors du chargement des données employé :", error);
+        });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des Évaluations de Fin d'Année{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Gestion des Évaluations de Fin d'Année 📋</h2>
+    <p>Préparez et saisissez les évaluations de performance des employés pour cette année.</p>
+
+    <!-- Table des employés -->
+    <h3>Liste des employés</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Évaluation</th>
+                <th>Objectifs</th>
+                <th>Rapport</th>
+            </tr>
+        </thead>
+        <tbody id="employee-table">
+            <!-- Les données des employés seront ajoutées ici via JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Modal pour saisir l'évaluation -->
+    <div class="modal" tabindex="-1" id="evaluationModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Saisir l'Évaluation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="evaluation-form">
+                        <input type="hidden" id="employee-id" name="employee_id">
+                        
+                        <div class="mb-3">
+                            <label for="score" class="form-label">Score de l'évaluation (sur 100) :</label>
+                            <input type="number" class="form-control" id="score" name="score" min="0" max="100" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="feedback" class="form-label">Commentaire :</label>
+                            <textarea class="form-control" id="feedback" name="feedback" rows="4" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Soumettre l'évaluation</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour afficher les objectifs -->
+    <div class="modal" tabindex="-1" id="objectivesModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Objectifs de l'Employé</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="employee-objectives-list">
+                        <!-- Les objectifs de l'employé seront ajoutés ici via JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>Objectifs de l'Année</h3>
+        <ul id="employee-objectives" class="list-group">
+            <!-- Les objectifs de l'employé seront ajoutés ici via JavaScript -->
+        </ul>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/evaluation_dashboard.js"></script>
+{% endblock %}

@@ -1,0 +1,408 @@
+{% extends "base_dashboard.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Mes Évaluations</h2>
+
+    <!-- Message d'information pour l'ID employé -->
+    <div class="alert alert-info mb-4" id="employee-id-alert">
+        <strong>Information :</strong> Le système n'a pas pu récupérer votre ID automatiquement. Veuillez entrer votre ID d'employé :
+        <div class="input-group mt-2">
+            <input type="number" class="form-control" id="manual-employee-id" min="1" placeholder="Votre ID d'employé">
+            <button class="btn btn-primary" id="set-employee-id-btn">Valider</button>
+        </div>
+    </div>
+
+    
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Mes Objectifs</span>
+            <button class="btn btn-sm btn-light" id="create-objective-btn">Créer un objectif</button>
+        </div>
+        <div class="card-body">
+            <div id="objectives-list">
+                <p class="text-center">Chargement des objectifs...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour créer un objectif -->
+<div class="modal fade" id="objectiveModal" tabindex="-1" aria-labelledby="objectiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="objectiveModalLabel">Créer un nouvel objectif</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="objective-form">
+                    <div class="mb-3" id="employee-id-container">
+                        <label for="manual-modal-employee-id" class="form-label">ID Employé</label>
+                        <input type="number" class="form-control" id="manual-modal-employee-id" min="1" required>
+                        <small class="form-text text-muted">Veuillez saisir votre ID d'employé</small>
+                    </div>
+                    <input type="hidden" id="employee-id" name="employee_id">
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description de l'objectif</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="start-date" class="form-label">Date de début</label>
+                        <input type="date" class="form-control" id="start-date" name="start_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end-date" class="form-label">Date d'échéance</label>
+                        <input type="date" class="form-control" id="end-date" name="end_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="save-objective-btn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Récupérer le cookie user_email pour identifier l'employé
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    const userEmail = getCookie('user_email');
+    console.log("Email de l'utilisateur:", userEmail);
+    
+    if (!userEmail) {
+        console.error("Email de l'utilisateur non trouvé dans les cookies");
+        document.getElementById('evaluations-list').innerHTML = 
+            '<p class="text-center text-danger">Erreur: utilisateur non identifié. Veuillez vous reconnecter.</p>';
+        document.getElementById('objectives-list').innerHTML = 
+            '<p class="text-center text-danger">Erreur: utilisateur non identifié. Veuillez vous reconnecter.</p>';
+        return;
+    }
+    
+    let currentEmployeeId = null;
+    
+    // Masquer l'alerte d'ID employé par défaut
+    const employeeIdAlert = document.getElementById('employee-id-alert');
+    employeeIdAlert.style.display = 'none';
+    
+    // Gestionnaire pour la saisie manuelle de l'ID employé
+    document.getElementById('set-employee-id-btn').addEventListener('click', function() {
+        const manualId = document.getElementById('manual-employee-id').value;
+        if (manualId && !isNaN(parseInt(manualId, 10))) {
+            currentEmployeeId = parseInt(manualId, 10);
+            document.getElementById('employee-id').value = currentEmployeeId;
+            console.log("ID employé défini manuellement:", currentEmployeeId);
+            
+            // Cacher l'alerte
+            employeeIdAlert.style.display = 'none';
+            
+            // Récupérer les objectifs avec l'ID saisi
+            fetchObjectives(currentEmployeeId);
+            
+            alert('ID employé enregistré avec succès !');
+        } else {
+            alert('Veuillez saisir un ID valide (nombre entier)');
+        }
+    });
+    
+    // Fonction pour récupérer les évaluations de l'employé
+    function fetchEmployeeEvaluations() {
+        // On utilise l'API pour récupérer les informations de l'employé
+        fetch(`/api/employee/profile/${userEmail}`)
+        .then(response => response.json())
+        .then(employee => {
+            console.log("Réponse de l'API profile:", employee);
+            
+            if (employee.id) {
+                // Stocker l'ID de l'employé pour le formulaire de création d'objectif
+                currentEmployeeId = employee.id;
+                document.getElementById('employee-id').value = employee.id;
+                console.log("ID employé défini:", employee.id, document.getElementById('employee-id').value);
+                
+                // Récupérer les évaluations
+                fetch(`/api/evaluations?employee_id=${employee.id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Aucune évaluation trouvée");
+                    }
+                    return response.json();
+                })
+                .then(evaluations => {
+                    const container = document.getElementById('evaluations-list');
+                    
+                    if (evaluations.length === 0) {
+                        container.innerHTML = '<p class="text-center">Aucune évaluation disponible pour le moment.</p>';
+                        return;
+                    }
+                    
+                    // Créer un tableau pour afficher les évaluations
+                    let html = `
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Score</th>
+                                <th>Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+                    
+                    evaluations.forEach(evaluation => {
+                        const date = new Date(evaluation.date).toLocaleDateString();
+                        html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td>${evaluation.score}/10</td>
+                            <td>${evaluation.feedback}</td>
+                        </tr>
+                        `;
+                    });
+                    
+                    html += `
+                        </tbody>
+                    </table>
+                    `;
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('evaluations-list').innerHTML = 
+                        '<p class="text-center">Aucune évaluation disponible pour le moment.</p>';
+                    console.error('Erreur:', error);
+                });
+                
+                // Récupérer les objectifs
+                fetchObjectives(employee.id);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération du profil:', error);
+            
+            // Plan B: Utiliser une API alternative
+            fetch(`/api/employee/${encodeURIComponent(userEmail)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.id) {
+                    console.log("ID employé récupéré via API alternative:", data.id);
+                    currentEmployeeId = data.id;
+                    document.getElementById('employee-id').value = data.id;
+                    
+                    // Récupérer les objectifs
+                    fetchObjectives(data.id);
+                } else {
+                    throw new Error("Impossible de récupérer l'ID de l'employé");
+                }
+            })
+            .catch(backupError => {
+                console.error('Erreur lors de la récupération alternative:', backupError);
+                
+                // Afficher l'alerte pour permettre la saisie manuelle de l'ID
+                employeeIdAlert.style.display = 'block';
+                
+                document.getElementById('evaluations-list').innerHTML = 
+                    '<p class="text-center text-warning">Impossible de récupérer automatiquement vos données. Veuillez saisir votre ID d\'employé ci-dessus.</p>';
+                document.getElementById('objectives-list').innerHTML = 
+                    '<p class="text-center text-warning">Impossible de récupérer automatiquement vos données. Veuillez saisir votre ID d\'employé ci-dessus.</p>';
+            });
+        });
+    }
+    
+    // Fonction pour récupérer les objectifs
+    function fetchObjectives(employeeId) {
+        fetch(`/api/objectives/${employeeId}`)
+        .then(response => {
+            return response.json();
+        })
+        .then(objectives => {
+            const container = document.getElementById('objectives-list');
+            
+            if (objectives.length === 0) {
+                container.innerHTML = '<p class="text-center">Aucun objectif défini pour le moment.</p>';
+                return;
+            }
+            
+            let html = `
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Date de début</th>
+                        <th>Date d'échéance</th>
+                        <th>Progression</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            objectives.forEach(objective => {
+                const startDate = new Date(objective.start_date).toLocaleDateString();
+                const endDate = new Date(objective.end_date).toLocaleDateString();
+                
+                html += `
+                <tr>
+                    <td>${objective.description}</td>
+                    <td>${startDate}</td>
+                    <td>${endDate}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: ${objective.progress}%;" 
+                                aria-valuenow="${objective.progress}" aria-valuemin="0" aria-valuemax="100">
+                                ${objective.progress}%
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            });
+            
+            html += `
+                </tbody>
+            </table>
+            `;
+            
+            container.innerHTML = html;
+        })
+        .catch(error => {
+            document.getElementById('objectives-list').innerHTML = 
+                '<p class="text-center">Aucun objectif disponible pour le moment.</p>';
+            console.error('Erreur:', error);
+        });
+    }
+    
+    // Gestionnaire d'événement pour ouvrir le modal de création d'objectif
+    document.getElementById('create-objective-btn').addEventListener('click', function() {
+        // Réinitialiser le formulaire
+        document.getElementById('objective-form').reset();
+        
+        // Gérer l'affichage du champ d'ID employé dans le modal
+        const employeeIdContainer = document.getElementById('employee-id-container');
+        const manualModalEmployeeId = document.getElementById('manual-modal-employee-id');
+        
+        if (currentEmployeeId) {
+            // Si l'ID est déjà connu, on peut le pré-remplir et cacher le champ
+            manualModalEmployeeId.value = currentEmployeeId;
+            employeeIdContainer.style.display = 'none';
+            document.getElementById('employee-id').value = currentEmployeeId;
+        } else {
+            // Sinon, on affiche le champ pour permettre la saisie
+            employeeIdContainer.style.display = 'block';
+        }
+        
+        console.log("État de l'ID employé dans le modal:", currentEmployeeId);
+        
+        // Pré-remplir les dates par défaut
+        const today = new Date().toISOString().split('T')[0];
+        const nextYear = new Date();
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        
+        document.getElementById('start-date').value = today;
+        document.getElementById('end-date').value = nextYear.toISOString().split('T')[0];
+        
+        // Ouvrir le modal
+        new bootstrap.Modal(document.getElementById('objectiveModal')).show();
+    });
+    
+    // Gestionnaire d'événement pour enregistrer un nouvel objectif
+    document.getElementById('save-objective-btn').addEventListener('click', function() {
+        const form = document.getElementById('objective-form');
+        
+        // Vérifier si le formulaire est valide
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // Si l'ID employé n'est pas défini, utiliser celui du champ manuel
+        if (!currentEmployeeId) {
+            const manualId = document.getElementById('manual-modal-employee-id').value;
+            if (manualId && !isNaN(parseInt(manualId, 10))) {
+                currentEmployeeId = parseInt(manualId, 10);
+                document.getElementById('employee-id').value = currentEmployeeId;
+                console.log("ID employé défini depuis le modal:", currentEmployeeId);
+            }
+        }
+        
+        // Vérifier que l'ID employé est bien défini
+        if (!currentEmployeeId || isNaN(currentEmployeeId)) {
+            console.error("ID employé manquant ou invalide:", currentEmployeeId);
+            alert("Erreur: ID employé manquant ou invalide. Veuillez saisir un ID d'employé valide.");
+            return;
+        }
+        
+        // Récupérer les valeurs du formulaire
+        const description = document.getElementById('description').value;
+        const startDateStr = document.getElementById('start-date').value;
+        const endDateStr = document.getElementById('end-date').value;
+        
+        // Formater les dates correctement (format ISO)
+        const startDate = new Date(startDateStr + "T00:00:00");
+        const endDate = new Date(endDateStr + "T00:00:00");
+        
+        // Préparer les données à envoyer
+        const formData = {
+            employee_id: currentEmployeeId,
+            description: description,
+            start_date: startDateStr, // Format YYYY-MM-DD
+            end_date: endDateStr,     // Format YYYY-MM-DD
+            progress: 0               // Valeur par défaut
+        };
+        
+        console.log("Données à envoyer:", formData, "Type de employee_id:", typeof formData.employee_id);
+        
+        // Envoyer les données à l'API
+        fetch('/api/objectives/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    try {
+                        // Tenter de parser le corps de la réponse comme JSON
+                        const errorData = JSON.parse(text);
+                        throw new Error(`Erreur ${response.status}: ${errorData.detail || text}`);
+                    } catch (e) {
+                        // En cas d'échec du parsing, utiliser le texte brut
+                        throw new Error(`Erreur ${response.status}: ${text}`);
+                    }
+                });
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log("Objectif créé:", result);
+            
+            // Fermer le modal
+            bootstrap.Modal.getInstance(document.getElementById('objectiveModal')).hide();
+            
+            // Rafraîchir la liste des objectifs
+            if (currentEmployeeId) {
+                fetchObjectives(currentEmployeeId);
+            }
+            
+            // Afficher un message de succès
+            alert("Objectif créé avec succès!");
+        })
+        .catch(error => {
+            console.error('Erreur détaillée:', error);
+            alert(error.message || "Une erreur est survenue lors de la création de l'objectif.");
+        });
+    });
+    
+    // Charger les données au chargement de la page
+    fetchEmployeeEvaluations();
+});
+</script>
+{% endblock %} 

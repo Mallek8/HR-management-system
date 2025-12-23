@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des formations{% endblock %}
+
+{% block content %}
+<!-- Bouton d'ajout de formation -->
+<button class="btn btn-success btn-lg" id="addTrainingBtn">
+    <i class="fas fa-plus"></i> Nouvelle formation
+</button>
+
+<!-- Modal création / modification de formation -->
+<div id="trainingModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-btn" onclick="document.getElementById('trainingModal').style.display='none'">×</span>
+        <h3 id="modalTitle">Nouvelle formation</h3>
+        <form id="trainingForm">
+            <!-- Champ caché pour l'ID de formation (utilisé pour la modification) -->
+            <input type="hidden" id="trainingId" name="id" />
+
+            <label for="title">Titre</label>
+            <input type="text" id="title" name="title" required />
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <label for="domain">Domaine</label>
+            <input type="text" id="domain" name="domain" required />
+
+            <label for="level">Niveau</label>
+            <select id="level" name="level" required>
+                <option value="">Sélectionner</option>
+                <option value="débutant">Débutant</option>
+                <option value="intermédiaire">Intermédiaire</option>
+                <option value="avancé">Avancé</option>
+            </select>
+
+            <label for="start_date">Date de début</label>
+            <input type="date" id="start_date" name="start_date" required />
+
+            <label for="end_date">Date de fin</label>
+            <input type="date" id="end_date" name="end_date" required />
+
+            <label for="target_department">Département ciblé</label>
+            <input type="text" id="target_department" name="target_department" required />
+
+            <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<!-- Message de chargement -->
+<div id="loadingMessage" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement des formations...</span>
+    </div>
+</div>
+
+<!-- Tableau des formations -->
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-hover table-striped align-middle shadow-sm">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>Titre</th>
+                <th>Domaine</th>
+                <th>Niveau</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Département</th>
+                <th>Actions</th> <!-- Nouvelle colonne -->
+            </tr>
+        </thead>
+        <tbody id="trainingTableBody">
+            <!-- Les lignes JS seront injectées ici -->
+        </tbody>
+    </table>
+</div>
+<!-- Bouton pour afficher les demandes -->
+<button class="btn btn-info mt-4" id="showRequestsBtn">
+    <i class="fas fa-list"></i> Afficher les demandes
+</button>
+
+<div class="table-responsive mt-3" id="requestsContainer" style="display:none;">
+    <h4>Demandes de formation</h4>
+    <table class="table table-bordered table-striped">
+        <thead class="table-secondary">
+            <tr>
+                <th>Employé</th>
+                <th>Email</th>
+                <th>Formation</th>
+                <th>Statut</th>
+                <th>Commentaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="requestsTableBody">
+            <!-- Injecté via JS -->
+             
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/trainings.js"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Tableau de bord Superviseur{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Nouvelles demandes de congé</h2>
+        </div>
+        <div class="card-body">
+            <div id="requestsList">
+                <!-- Les demandes seront chargées ici -->
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bloc demandes de formation -->
+    <div class="card mt-5">
+        <div class="card-header bg-warning text-dark">
+            <h2 class="mb-0">Demandes de formation</h2>
+        </div>
+        <div class="card-body">
+            <div id="trainingRequestsList">
+                <!-- Les demandes de formation seront chargées ici -->
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{{ url_for('static', path='js/supervisor_training.js') }}"></script>
+<script src="{{ url_for('static', path='js/supervisor_leaves.js') }}"></script>
+{% endblock %}

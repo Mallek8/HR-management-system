@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de Bord | HannaWork System{% endblock %}
+
+{% block head %}
+<style>
+    .dashboard-card {
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+    .dashboard-card .card-body { padding: 1.5rem; }
+    .dashboard-value { font-size: 2.5rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 0.5rem; }
+    .dashboard-label { color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; }
+    .chart-container { height: 300px; position: relative; margin-bottom: 1.5rem; }
+    .dashboard-header { margin-bottom: 2rem; }
+    .dashboard-title { color: var(--secondary-color); font-weight: 700; }
+    .section-title { font-size: 1.5rem; font-weight: 600; color: var(--secondary-color); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-color); }
+    .activity-item { padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-time { font-size: 0.8rem; color: var(--text-secondary); }
+    .status-badge { padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
+    .status-pending { background-color: rgba(255, 193, 7, 0.2); color: #e6a600; }
+    .status-approved { background-color: rgba(40, 167, 69, 0.2); color: #218838; }
+    .status-rejected { background-color: rgba(220, 53, 69, 0.2); color: #c82333; }
+    @media (max-width: 992px) {
+        .dashboard-value { font-size: 2rem; }
+        .dashboard-icon { font-size: 2rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h1 class="dashboard-title">Tableau de Bord</h1>
+            <p class="text-muted">Bienvenue dans votre système de gestion des ressources humaines</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light" id="refresh-dashboard">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualiser
+            </button>
+        </div>
+    </div>
+    <div class="row mb-4 g-3">
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card card text-center">
+                <div class="card-body">
+                    <i class="bi bi-people-fill dashboard-icon"></i>
+                    <h2 class="dashboard-value" id="total-employees">--</h2>
+                    <p class="dashboard-label">EMPLOYÉS ACTIFS</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card card text-center">
+                <div class="card-body">
+                    <i class="bi bi-calendar-check dashboard-icon"></i>
+                    <h2 class="dashboard-value" id="pending-leaves">--</h2>
+                    <p class="dashboard-label">CONGÉS EN ATTENTE</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card card text-center">
+                <div class="card-body">
+                    <i class="bi bi-mortarboard-fill dashboard-icon"></i>
+                    <h2 class="dashboard-value" id="approved-trainings">--</h2>
+                    <p class="dashboard-label">FORMATIONS VALIDÉES</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card card text-center">
+                <div class="card-body">
+                    <i class="bi bi-trophy-fill dashboard-icon"></i>
+                    <h2 class="dashboard-value" id="achieved-goals">--</h2>
+                    <p class="dashboard-label">OBJECTIFS ATTEINTS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function updateDashboard() {
+    try {
+        const res = await fetch('/api/admin/stats');
+        if (!res.ok) throw new Error("Erreur de chargement");
+        const data = await res.json();
+        document.getElementById("total-employees").textContent = data.total_employees;
+        document.getElementById("pending-leaves").textContent = data.pending_leaves;
+        document.getElementById("approved-trainings").textContent = data.approved_trainings;
+        document.getElementById("achieved-goals").textContent = data.achieved_goals + '%';
+    } catch (err) {
+        console.error("Erreur de mise à jour :", err);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateDashboard();
+    setInterval(updateDashboard, 30000);
+    document.getElementById('refresh-dashboard').addEventListener('click', updateDashboard);
+});
+</script>
+{% endblock %}

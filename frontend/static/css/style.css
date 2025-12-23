@@ -1,0 +1,299 @@
+:root {
+  --primary: #4A90E2;
+  --primary-dark: #003366;
+  --primary-light: #DDE6F1;
+  --secondary: #F5F7FA;
+  --success: #27AE60;
+  --danger: #E74C3C;
+  --danger-dark: #C0392B;
+  --white: #FFFFFF;
+  --dark: #2D3047;
+  --text-light: #6E7391;
+  --border: #E2E8F0;
+}
+
+/* 🌐 Typographie générale */
+body {
+  background-color: var(--white);
+  color: var(--dark);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: var(--dark);
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+/* 🧾 Cartes */
+.card {
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.card-text {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+/* 🔘 Boutons */
+.btn {
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.7rem 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  letter-spacing: -0.01em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border: none;
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background-color: #3A80D2;
+}
+
+.btn-secondary {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #C8D5E5;
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: var(--white);
+}
+
+.btn-success:hover {
+  background-color: #219653;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-dark);
+}
+
+/* Bouton spécial déconnexion */
+.nav-item .btn-danger {
+  background-color: var(--danger-dark);
+  color: var(--white);
+}
+
+.nav-item .btn-danger:hover {
+  background-color: #AB2A22;
+}
+
+/* Bouton contour */
+.btn-outline-primary {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+/* 🔗 Navigation */
+.navbar {
+  background: var(--primary-dark) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem 1rem;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--white) !important;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8) !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--white) !important;
+}
+
+/* 🧮 Tableaux */
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.table thead th {
+  background-color: var(--secondary);
+  color: var(--dark);
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* 🏷️ Badges */
+.badge {
+  padding: 0.5em 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: 8px;
+  font-size: 0.75rem;
+}
+
+.badge-primary {
+  background-color: rgba(74, 144, 226, 0.15);
+  color: var(--primary);
+}
+
+.badge-secondary {
+  background-color: rgba(245, 247, 250, 0.8);
+  color: #6c757d;
+}
+
+.badge-success {
+  background-color: rgba(39, 174, 96, 0.15);
+  color: var(--success);
+}
+
+.badge-danger {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: var(--danger);
+}
+
+/* 🖊️ Formulaires */
+.form-control {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: var(--white);
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+  outline: none;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+  font-size: 0.9rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group-text {
+  background-color: var(--secondary);
+  border-color: var(--border);
+  color: var(--text-light);
+  border-radius: 12px 0 0 12px;
+}
+
+/* 🔐 Login */
+.login-card {
+  max-width: 400px;
+  margin: 100px auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.login-logo {
+  max-width: 120px;
+  margin-bottom: 1.5rem;
+}
+
+.login-title {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.login-subtitle {
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.forgot-password {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+  color: var(--primary);
+}

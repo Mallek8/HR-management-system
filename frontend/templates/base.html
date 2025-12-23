@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- SECTION: Métadonnées de la page -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HannaWork System{% endblock %}</title>
+
+    <!-- SECTION: CSS externes (Frameworks) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- SECTION: Styles personnalisés -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/colors.css') }}">
+    <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
+    {% block head %}{% endblock %}
+
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #003366;
+            --light-bg: #F5F7FA;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --navbar-height: 60px; /* Hauteur fixe de la navbar */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            /* Ajouter un padding pour compenser la navbar fixe */
+            padding-top: calc(var(--navbar-height) + 15px);
+        }
+
+        .navbar {
+            background-color: var(--secondary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.5rem 1rem; /* Réduire le padding vertical */
+            height: var(--navbar-height); /* Hauteur fixe */
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white;
+            font-size: 1.3rem; /* Légèrement réduit */
+        }
+
+        .navbar-brand i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important; /* Couleur blanche légèrement transparente */
+            font-weight: 500;
+            padding: 0.4rem 0.8rem; /* Réduire le padding */
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+        }
+
+        .nav-link.active {
+            color: white !important;
+            font-weight: 600;
+        }
+
+        /* Changer la couleur de l'icône du toggler pour qu'elle soit visible sur fond bleu */
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5);
+            padding: 0.25rem 0.5rem; /* Plus petit */
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .main-content {
+            padding: 1rem 2rem;
+        }
+
+        /* Styles pour le contenu */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: var(--light-bg);
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .btn {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-light {
+            background-color: white;
+            border-color: rgba(0,0,0,0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-light:hover {
+            background-color: var(--light-bg);
+            border-color: rgba(0,0,0,0.2);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            background-color: var(--light-bg);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .modal-title {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        }
+
+        .alert {
+            border-radius: 5px;
+            border: none;
+            padding: 1rem;
+        }
+
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .badge-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        .badge-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        /* Classe pour ajuster les espaces dans les pages existantes */
+        .main-content {
+            padding-top: 1rem;
+        }
+
+        /* Styles pour les boutons d'action dans les tableaux */
+        .action-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        /* Style pour les boutons d'action plus compacts dans les tableaux */
+        .btn-action {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            min-width: 2.2rem;
+        }
+
+        .btn-action i {
+            font-size: 0.9rem;
+        }
+
+        /* Ajustements pour les écrans plus petits */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background-color: var(--secondary-color);
+                padding: 1rem;
+                border-radius: 0 0 10px 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            
+            /* Garder les boutons d'action sur la même ligne même en responsive */
+            .action-buttons-container {
+                gap: 0.3rem;
+            }
+            
+            .btn-action {
+                padding: 0.35rem 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SECTION: Barre de navigation (affichée uniquement si l'utilisateur est connecté) -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-briefcase-fill"></i>
+                HannaWork System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard_admin">
+                            <i class="bi bi-speedometer2"></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employees">
+                            <i class="bi bi-people"></i> Employés
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/leaves">
+                            <i class="bi bi-calendar-check"></i> Congés
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/trainings">
+                            <i class="bi bi-book"></i> Formations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/evaluations">
+                            <i class="bi bi-graph-up"></i> Évaluations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">
+                            <i class="bi bi-box-arrow-right"></i> Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SECTION: Contenu dynamique injecté dans les pages -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- SECTION: Scripts JavaScript (chargés à la fin pour optimisation) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

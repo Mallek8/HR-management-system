@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- SECTION: Métadonnées -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HannaConnect - Administration</title>
+    <!-- Lien vers le favicon -->
+    <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon">
+    <!-- SECTION: Feuilles de style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/colors.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/dashboard.css') }}">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <!-- SECTION: Wrapper principal avec sidebar -->
+    <div class="d-flex" id="wrapper">
+
+        <!-- SECTION: Barre latérale de navigation -->
+        <div class="sidebar">
+            <h3 class="d-flex align-items-center ps-3">
+                <!-- Logo SVG intégré -->
+                <svg width="30" height="30" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                    <path d="M30 0C13.4315 0 0 13.4315 0 30C0 46.5685 13.4315 60 30 60C46.5685 60 60 46.5685 60 30C60 13.4315 46.5685 0 30 0Z" fill="#4A90E2"/>
+                    <path d="M18 30C18 23.3726 23.3726 18 30 18C36.6274 18 42 23.3726 42 30" stroke="white" stroke-width="4"/>
+                    <path d="M22 35H38" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M22 42H38" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                HannaConnect
+            </h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="/dashboard_admin" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/employees" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Employés</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/leaves" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Congés</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/trainings" class="nav-link">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Formations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/evaluations" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Évaluations</span>
+                    </a>
+                </li>
+
+                <!-- SECTION: Bouton de déconnexion -->
+                <li class="nav-item mt-5">
+                    <a href="/logout" class="btn btn-danger w-100">
+                        <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- SECTION: Contenu principal injecté dynamiquement -->
+        <div class="container-fluid p-0" id="content">
+            <!-- En-tête avec informations utilisateur et utilitaires -->
+            <header class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h4 m-0 fw-bold">{% block page_title %}Tableau de bord{% endblock %}</h1>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown notifications-dropdown me-3">
+                        <button class="btn btn-light position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                2
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-calendar-check notification-icon"></i>
+                                    Nouvelle demande de congé
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-chart-bar notification-icon"></i>
+                                    Évaluation planifiée
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Contenu principal -->
+            <div class="px-4">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: JavaScript Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

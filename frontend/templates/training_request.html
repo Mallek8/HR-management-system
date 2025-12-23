@@ -1,0 +1,38 @@
+{% extends "base_dashboard.html" %}
+
+{% block title %}Demande de Formation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Faire une demande de formation</h2>
+
+    <!-- Formulaire de demande -->
+    <form id="trainingRequestForm" class="shadow p-4 bg-light rounded">
+        <div class="mb-3">
+            <label for="training_id" class="form-label">Formation</label>
+            <select id="training_id" name="training_id" class="form-select" required>
+                <option value="">Sélectionner une formation</option>
+                <!-- Les options seront injectées par JS -->
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Soumettre la demande</button>
+    </form>
+
+    <!-- Messages -->
+    <div id="requestSuccess" class="alert alert-success mt-3 d-none">Demande envoyée avec succès.</div>
+    <div id="requestError" class="alert alert-danger mt-3 d-none">Erreur lors de la soumission.</div>
+</div>
+<!-- Plan de formation de l'employé -->
+<div id="trainingPlanSection" class="mt-5">
+    <h3 class="mb-3">Mon plan de formation</h3>
+    <div id="trainingPlanList" class="row row-cols-1 row-cols-md-2 g-4">
+        <!-- Les cartes de plan seront injectées ici -->
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/request_training.js"></script>
+{% endblock %}

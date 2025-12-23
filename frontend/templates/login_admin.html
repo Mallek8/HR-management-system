@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion Administrateur{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Connexion Administrateur</h2>
+
+    <!-- Formulaire de connexion -->
+    <form id="adminLoginForm" class="w-50 mx-auto border p-4 rounded shadow-sm bg-light">
+        <div class="mb-3">
+            <label for="admin_email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="admin_email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="admin_password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" id="admin_password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Script JS lié à la logique métier de login -->
+<script src="{{ url_for('static', filename='js/login_admin.js') }}"></script>
+{% endblock %}

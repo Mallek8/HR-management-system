@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="text-center mb-5">
+        <h1>Bienvenue sur le Système de Gestion des Ressources Humaines</h1>
+        <p class="text-muted">Gérez les employés, les congés, les formations et plus encore.</p>
+    </div>
+
+    <!-- Main Actions Row -->
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-3">
+            <a href="{{ url_for('employees_page') }}" class="btn w-100 py-3" style="background-color: #87A9FF; color: white;">
+                Gestion des Employés
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('leaves_page') }}" class="btn w-100 py-3" style="background-color: #B4A7FF; color: white;">
+                Gestion des Congés
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('trainings_page') }}" class="btn w-100 py-3" style="background-color: #87A9FF; color: white;">
+                Gestion des Formations
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('evaluations_page') }}" class="btn w-100 py-3" style="background-color: #B4A7FF; color: white;">
+                Gestion des Évaluations
+            </a>
+        </div>
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="mt-5">
+        <h2 class="mb-4">Notifications</h2>
+        <div class="list-group">
+            <div class="list-group-item border-0 mb-2 rounded">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">Nouvelle demande de congé</h6>
+                </div>
+            </div>
+            <div class="list-group-item border-0 mb-2 rounded">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">Un employé a été ajouté</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn {
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0.9;
+}
+
+.list-group-item {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    color: #2D3047;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    color: #2D3047;
+    font-weight: 600;
+}
+
+body {
+    background-color: #F8FAFC;
+}
+
+/* Navbar custom style */
+.navbar {
+    background: linear-gradient(135deg, #87A9FF, #B4A7FF) !important;
+}
+</style>
+{% endblock %} 
