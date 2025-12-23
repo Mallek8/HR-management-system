@@ -1,379 +1,193 @@
-# 📌 Projet de gestion des ressources humaines
+# 🏢 HR Management System
 
-> 📖 Ce document contient **l'intégralité des informations** relatives au projet : configuration, architecture, design patterns, tests, structure, et instructions d'exécution.
+A modern, scalable Human Resources Management System built with FastAPI and PostgreSQL. Features comprehensive employee management, leave tracking, training administration, performance evaluations, and automated notifications.
 
-> 🌐 **English version**: See [README_EN.md](README_EN.md)
+## ✨ Features
 
-## 📚 Contexte académique
+- **Employee Management**: Complete CRUD operations for employee records with role-based access control
+- **Leave Management**: Request, approve, and track employee leave with state machine workflow
+- **Training Management**: Create training plans, track employee training, and manage training requests
+- **Performance Evaluation**: Employee evaluation and objective tracking
+- **Notifications**: Multi-channel notification system (Email, SMS, Database) with Strategy pattern
+- **Dashboard**: Role-specific dashboards for Admin, Supervisor, and Employee
+- **Authentication & Authorization**: JWT-based authentication with role-based permissions
+- **Automated Workflows**: Event-driven architecture with Observer pattern for reactive notifications
 
-Ce projet a été développé dans le cadre du cours **"Approches Orientées Objet"** comme projet académique personnel. Il démontre l'application pratique des principes de conception orientée objet, des design patterns et de l'architecture logicielle propre.
+## 🏗️ Architecture
 
-**Auteur** : Mallek Hannachi  
-**Année** : Mars 2025  
-**Type** : Projet personnel académique
+Built following **Clean Architecture** principles and **SOLID** design principles:
 
-> ⚠️ **Note** : Toutes les données utilisées dans ce projet (noms, emails, identifiants) sont **fictives** et servent uniquement à des fins de démonstration et de test.
+- **API Layer**: FastAPI REST endpoints with request validation
+- **Service Layer**: Business logic and orchestration
+- **Repository Layer**: Data access abstraction
+- **Data Layer**: SQLAlchemy ORM models
 
----
+### Design Patterns
 
-## 📄 Rapport du projet
+- **Factory Pattern**: Service creation and employee factory
+- **Repository Pattern**: Data access abstraction
+- **Strategy Pattern**: Notification channel selection
+- **Observer Pattern**: Event-driven notifications
+- **State Pattern**: Leave request state transitions
+- **Facade Pattern**: Workflow simplification
+- **Dependency Injection**: FastAPI-based DI
 
-👉 [Télécharger le rapport (PDF)](projetift785_2_.pdf)
+## 🚀 Quick Start
 
----
+### Prerequisites
 
-## 🎯 Principes SOLID et qualité logicielle
+- Python 3.13+
+- PostgreSQL 12+
+- pip
 
-Ce projet respecte les **principes SOLID** et applique une **architecture propre** (Clean Architecture) :
+### Installation
 
-### Principes SOLID
-
-- **S - Single Responsibility Principle** : Chaque classe/module a une seule responsabilité claire
-  - `AuthService` : Authentification uniquement
-  - `EmployeeService` : Gestion des employés uniquement
-  - `LeaveService` : Gestion des congés uniquement
-
-- **O - Open/Closed Principle** : Ouvert à l'extension, fermé à la modification
-  - Utilisation de design patterns (Strategy, Factory) pour l'extensibilité
-  - Nouveaux types de notifications ajoutables sans modifier le code existant
-
-- **L - Liskov Substitution Principle** : Les sous-types sont substituables à leurs types de base
-  - Interfaces et abstractions respectent la substitution
-
-- **I - Interface Segregation Principle** : Interfaces spécifiques plutôt qu'interfaces générales
-  - Séparation des interfaces par responsabilité (repositories, services)
-
-- **D - Dependency Inversion Principle** : Dépendre des abstractions, pas des implémentations
-  - Injection de dépendances via FastAPI
-  - Repositories abstraits pour l'accès aux données
-
-### Architecture propre (Clean Architecture)
-
-Le projet suit une architecture en couches clairement séparées :
-
-```
-┌─────────────────────────────────────┐
-│         API Layer (FastAPI)         │  ← Points d'entrée HTTP/REST
-│      app/api/*.py                   │
-├─────────────────────────────────────┤
-│      Service Layer                  │  ← Logique métier
-│      app/services/*.py              │
-├─────────────────────────────────────┤
-│      Repository Layer               │  ← Abstraction d'accès aux données
-│      app/repositories/*.py          │
-├─────────────────────────────────────┤
-│      Data Layer (SQLAlchemy)        │  ← Modèles ORM et base de données
-│      app/models/*.py                │
-└─────────────────────────────────────┘
-```
-
-**Séparation des responsabilités** :
-- **API Layer** : Validation des requêtes HTTP, gestion des réponses
-- **Service Layer** : Logique métier, règles de gestion, orchestration
-- **Repository Layer** : Abstraction de l'accès aux données, isolation de la base
-- **Data Layer** : Modèles de données, mapping ORM
-
-Cette architecture assure :
-- **Faible couplage** : Chaque couche dépend uniquement de l'inférieure
-- **Haute cohésion** : Chaque module a une responsabilité bien définie
-- **Testabilité** : Chaque couche peut être testée indépendamment
-- **Maintenabilité** : Modifications isolées à une couche spécifique
-
----
-
-## 🔐 Identifiants de connexion
-
-### 👩‍💼 Administrateur
-- **Email / identifiant** : `admin`
-- **Mot de passe** : `admin123`
-
-### 👨‍💻 Employé (exemple)
-- **Email / identifiant** : `hannachimallek8@gmail.com`
-- **Mot de passe** : `default_password`
-
-### 👨‍💻 Employé (Superviseur)
-- **Email / identifiant** : `faroukhan@gmail.com`
-- **Mot de passe** : `default_password`
-
-> ⚠️ **Note** : Ces identifiants sont fictifs et destinés uniquement à des fins de test.
-
----
-
-## 🛠 Installation
-
-1. **Cloner le projet**
-   ```sh
-   git clone <URL_DU_REPO>
-   cd <NOM_DU_REPO>
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Mallek8/HR-management-system.git
+   cd HR-management-system
    ```
 
-2. **Créer un environnement virtuel et l'activer**
-   ```sh
+2. **Create a virtual environment**
+   ```bash
    python -m venv venv
-   venv\Scripts\activate     # Sur Windows
-   source venv/bin/activate  # Sur Linux/Mac
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Installer les dépendances**
-   ```sh
+3. **Install dependencies**
+   ```bash
    pip install -r requirements.txt
    ```
 
-4. **Configurer la base de données**
+4. **Configure environment variables**
+   ```bash
+   cp env.example .env
+   # Edit .env with your database credentials
    ```
-   Pour la configuration de la base de données, assurez-vous que
-   vous utilisez une base de données PostgreSQL, SQLite ou une autre que vous avez
-   configurée. Assurez-vous de bien définir vos variables d'environnement ou de configurer le fichier de configuration avec les bonnes informations de connexion.
-   ```
-   **Exécutez les migrations pour préparer la base de données :**
-   ```sh
+
+5. **Run database migrations**
+   ```bash
    alembic upgrade head
    ```
 
----
+6. **Start the application**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
-## 🚀 Exécution de l'application
+   The API will be available at `http://127.0.0.1:8000`
 
-**Lancer l'application FastAPI**
+7. **Access the API documentation**
+   - Swagger UI: `http://127.0.0.1:8000/docs`
+   - ReDoc: `http://127.0.0.1:8000/redoc`
 
-```sh
-uvicorn app.main:app --reload
-```
-
-**Port** : L'application sera accessible par défaut sur http://127.0.0.1:8000
-
-**Pour d'autres ports :**
-```sh
-python -m uvicorn app.main:app --reload --port 8080
-```
-
----
-
-## 🧪 Tests automatisés
-
-Le projet inclut une suite complète de tests automatisés couvrant différents niveaux de test :
-
-### 🔧 Tests unitaires
-
-Testent les composants individuels (services, repositories, modèles) de manière isolée.
-
-**Exécuter les tests unitaires :**
-```sh
-pytest tests/ -v
-```
-
-**Exemples de tests unitaires :**
-- `test_leave_requests.py` : Test de création de demande de congé
-- `test_leave_repository_additional.py` : Test du repository Leave
-- `test_objectives_api.py`, `test_leave_state_api.py`
-
-### 🌀 Tests d'intégration
-
-Testent l'interaction entre plusieurs composants (services, repositories, API).
-
-**Exemples de tests d'intégration :**
-- `test_integration_employee.py` : Création, mise à jour, récupération d'un employé via API
-- Tests des workflows complets entre services
-
-### 🚤 Tests end-to-end (E2E)
-
-Testent des scénarios complets depuis l'API jusqu'à la base de données.
-
-**Exemples de tests E2E :**
-- `test_e2e_training_request.py` : Création, approbation, plan de formation (workflow complet)
-- `test_end_to_end_leave_request.py` : Demande de congé de A à Z
-
-### 📊 Rapport de couverture de code
-
-**Exécuter tous les tests avec couverture :**
-```sh
-pytest --maxfail=1 --disable-warnings -v
-```
-
-**Générer un rapport de couverture :**
-```sh
-python -m pytest --cov=app --cov-report=term-missing
-```
-
-**Rapport de couverture en HTML :**
-```sh
-pytest --cov=app --cov-report=html
-```
-Ouvrez `htmlcov/index.html` dans un navigateur pour visualiser le rapport.
-
----
-
-## 📂 Structure du projet
+## 📁 Project Structure
 
 ```
-📁PROJET_GRH_MALLEK/
-├── .pytest_cache/
-├── alembic/              # Migrations de base de données
+HR-management-system/
 ├── app/
-│   ├── api/              # Couche API REST (endpoints FastAPI)
-│   │   ├── auth.py
-│   │   ├── dashboard_admin.py
-│   │   ├── dashboard_employee.py
-│   │   ├── dashboard_supervisor.py
-│   │   ├── employees.py
-│   │   ├── evaluations.py
-│   │   ├── leave_api.py
-│   │   ├── leave_requests.py
-│   │   ├── objectives.py
-│   │   ├── profile.py
-│   │   ├── reports.py
-│   │   ├── training_requests.py
-│   │   ├── trainings.py
-│   ├── factories/        # Design Pattern: Factory
-│   │   ├── app_factory.py
-│   │   ├── employee_factory.py
-│   ├── models/           # Modèles SQLAlchemy (couche données)
-│   │   ├── department.py
-│   │   ├── employee_role.py
-│   │   ├── employee_training.py
-│   │   ├── employee.py
-│   │   ├── evaluation.py
-│   │   ├── leave_balance.py
-│   │   ├── leave.py
-│   │   ├── notification.py
-│   │   ├── objective.py
-│   │   ├── role.py
-│   │   ├── training_plan.py
-│   │   ├── training_request.py
-│   │   ├── training.py
-│   ├── repositories/     # Design Pattern: Repository
-│   │   ├── employee_repository.py
-│   │   ├── leave_repository.py
-│   ├── routes/
-│   ├── services/         # Couche service (logique métier)
-│   │   ├── abstract_factory.py
-│   │   ├── auth_service.py
-│   │   ├── dashboard_controller.py
-│   │   ├── employee_service.py
-│   │   ├── evaluation_service.py
-│   │   ├── leave_service.py
-│   │   ├── leave_workflow_facade.py
-│   │   ├── notification_service.py
-│   │   ├── report_service.py
-│   │   ├── training_plan_service.py
-│   ├── strategies/       # Design Pattern: Strategy
-│   │   └── notifications/
-│   ├── states/           # Design Pattern: State
-│   │   └── leave_request/
-│   ├── observers/        # Design Pattern: Observer
-├── frontend/
-│   ├── static/           # Fichiers statiques (CSS, JS, images)
-│   ├── templates/        # Templates Jinja2
-├── migrations/
-├── scripts/
-├── tests/                # Tests automatisés
-│   ├── conftest.py
-│   ├── test_report_service.py
-│   ├── test_database.py
-│   ├── test_authentication.py
-├── requirements.txt      # Dépendances Python
-├── .gitignore
-├── alembic.ini
-├── LICENSE               # Licence MIT
-├── documentation/
-│   ├── projet_doc.txt
-└── README.md
+│   ├── api/              # REST API endpoints
+│   ├── core/             # Configuration and security
+│   ├── models/           # SQLAlchemy ORM models
+│   ├── repositories/     # Data access layer
+│   ├── services/         # Business logic layer
+│   ├── factories/        # Factory patterns
+│   ├── strategies/       # Strategy patterns
+│   ├── observers/        # Observer patterns
+│   └── states/           # State patterns
+├── tests/                # Automated tests
+│   ├── integration/      # Integration tests
+│   └── e2e_test/         # End-to-end tests
+├── alembic/              # Database migrations
+├── frontend/             # Web interface (templates)
+└── requirements.txt      # Python dependencies
 ```
 
----
+## 🧪 Testing
 
-## ✨ Design Patterns et architecture
+The project includes comprehensive test coverage:
 
-### 📄 Design Patterns utilisés
+```bash
+# Run all tests
+pytest --maxfail=1 --disable-warnings -v
 
-- **Factory (Abstract Factory)**  
-  *Fichier* : `app/services/abstract_factory.py`, `app/factories/`  
-  Utilisation : Création abstraite des services (EmployeeService, LeaveService).
+# Run with coverage
+pytest --cov=app --cov-report=html
 
-- **Facade**  
-  *Fichier* : `app/services/leave_workflow_facade.py`  
-  Utilisation : Encapsulation du workflow de gestion des congés.
+# View coverage report
+open htmlcov/index.html  # On Windows: start htmlcov/index.html
+```
 
-- **Repository**  
-  *Dossier* : `app/repositories/`  
-  Utilisation : Abstraction de l'accès aux données (employés, congés, formations).
+### Test Types
 
-- **Strategy**  
-  *Dossier* : `app/strategies/notifications/`  
-  Utilisation : Système de notification. Choix dynamique du canal (email, SMS, base de données).
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: Component interaction testing
+- **E2E Tests**: Complete workflow testing
 
-- **Observer**  
-  *Dossier* : `app/observers/`  
-  Utilisation : Notifications liées à des événements, gestion d'observateurs.
+## 🔐 Default Credentials
 
-- **State Pattern**  
-  *Dossier* : `app/states/leave_request/`  
-  Utilisation : Transitions d'état des demandes de congé (pending, approved, rejected).
+**Administrator**
+- Username: `admin`
+- Password: `admin123`
 
-- **Singleton**  
-  *Classe* : `EventSubject`  
-  Utilisation : Une instance unique pour gérer les observateurs.
+> ⚠️ **Important**: Change default credentials in production!
 
-- **Service Layer**  
-  *Dossier* : `app/services/`  
-  Utilisation : Encapsulation de la logique métier (LeaveService, NotificationService).
+## 🛠️ Technology Stack
 
-- **Dependency Injection**  
-  Utilisation : Injection des sessions DB, services, stratégies via FastAPI.
+- **Framework**: FastAPI
+- **Database**: PostgreSQL with psycopg v3
+- **ORM**: SQLAlchemy 2.0
+- **Authentication**: JWT (JSON Web Tokens)
+- **Password Hashing**: bcrypt
+- **Migration Tool**: Alembic
+- **Testing**: pytest
+- **Validation**: Pydantic
 
-### Avantages dans le projet
+## 📊 Key Features in Detail
 
-- ✅ **Faible couplage** : Composants indépendants et réutilisables
-- ✅ **Haute cohésion** : Chaque module a une responsabilité claire
-- ✅ **Extensibilité** : Facile d'ajouter de nouvelles fonctionnalités
-- ✅ **Maintenabilité** : Architecture propre et bien organisée
-- ✅ **Testabilité** : Chaque couche peut être testée indépendamment
+### Employee Management
+- Create, update, and manage employee profiles
+- Role-based access control (Admin, Supervisor, Employee)
+- Department and role assignment
+- Employee search and filtering
 
----
+### Leave Management
+- Request leave with approval workflow
+- Leave balance tracking
+- Leave history and statistics
+- Automated leave balance initialization
 
-## 📜 Architecture en couches
+### Training Management
+- Training catalog management
+- Employee training requests
+- Training plan assignment
+- Training completion tracking
 
-Le projet suit une architecture en couches (Clean Architecture) :
+### Notifications
+- Multi-channel notifications (Email, SMS, Database)
+- Event-driven notification system
+- Configurable notification strategies
 
-| Couche | Responsabilité | Localisation |
-|--------|---------------|--------------|
-| **API Layer** | Points d'accès REST, validation des requêtes | `app/api/*.py` |
-| **Service Layer** | Logique métier, règles de gestion | `app/services/*.py` |
-| **Repository Layer** | Abstraction de l'accès aux données | `app/repositories/*.py` |
-| **Data Layer** | Modèles ORM, mapping base de données | `app/models/*.py` |
-| **Schemas** | Validation des entrées/sorties (Pydantic) | `app/schemas/` |
-| **Observers** | Notifications réactives | `app/observers/` |
-| **Strategies** | Choix de comportements dynamiques | `app/strategies/` |
-| **Tests** | Tests automatisés (unitaire, intégration, E2E) | `tests/` |
+## 🤝 Contributing
 
----
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📁 Documentation
+## 📝 License
 
-- La documentation détaillée du projet est disponible dans `documentation/projet_doc.txt`
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 👤 Author
 
-## 📔 Auteur et licence
+**Mallek Hannachi**
 
-**Auteur** : Mallek Hannachi  
-**Année** : Mars 2025  
-**Type** : Projet personnel académique
+- GitHub: [@Mallek8](https://github.com/Mallek8)
 
-Ce projet est un projet personnel développé dans un contexte académique. Tous les droits sont réservés.
+## 🙏 Acknowledgments
 
-### Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
----
-
-## ⚠️ Avertissement
-
-Toutes les données présentes dans ce projet (noms d'utilisateurs, emails, identifiants, etc.) sont **entièrement fictives** et sont utilisées uniquement à des fins de démonstration, de test et d'apprentissage. Ce projet ne traite aucune donnée réelle.
+- FastAPI community for the excellent framework
+- SQLAlchemy team for the powerful ORM
+- All contributors and users of this project
 
 ---
 
-## 🤝 Contribution
-
-Ce projet est un projet académique personnel. Les contributions externes ne sont pas acceptées pour le moment.
+⭐ If you find this project helpful, please consider giving it a star!
